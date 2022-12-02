@@ -4,6 +4,7 @@ import argparse
 import http.server
 import os
 import socket
+import typing
 
 import qrcode
 
@@ -29,20 +30,19 @@ def print_qr(data: str) -> None:
     qr.print_ascii()
 
 
-def start_server(
-    directory: str, host: str | None = None, port: int | None = None
-) -> None:
+def start_server(directory: str, host: str, port: int) -> None:
     httpd = http.server.HTTPServer(
         (host, port),
-        lambda *args: http.server.SimpleHTTPRequestHandler(*args, directory=directory),
+        lambda *args: http.server.SimpleHTTPRequestHandler(  # type: ignore
+            *args, directory=directory
+        ),
     )
-    print("Starting server...")
     httpd.serve_forever()
 
 
-def main(argv: argparse.Namespace | None = None) -> int:
+def main(argv: typing.Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="pyshare", description="Share files in your local network"
+        prog="pyshare", description="Share directory in your local network"
     )
     parser.add_argument(
         "directory",
@@ -67,6 +67,10 @@ def main(argv: argparse.Namespace | None = None) -> int:
     ip = args.host or get_ip_addr()
     port = int(args.port) or get_free_port((7500, 7800))
     url = f"http://{ip}:{port}"
-    print(f"Sharing {args.directory} at {url}")
     print_qr(url)
-    start_server(args.directory, host=ip, port=port)
+    print(f"Sharing {args.directory!r} at {url}")
+    try:
+        start_server(args.directory, host=ip, port=port)
+    except KeyboardInterrupt:
+        print("\rShutting down...")
+    return 0
