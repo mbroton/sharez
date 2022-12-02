@@ -1,7 +1,4 @@
 from pyshare import main
 
 
-try:
-    raise SystemExit(main())
-except KeyboardInterrupt:
-    print("\rShutting down...")
+raise SystemExit(main())
