@@ -42,7 +42,7 @@ def start_server(directory: str, host: str, port: int) -> None:
 
 def main(argv: typing.Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="pyshare", description="Share directory in your local network"
+        prog="sharez", description="Share directory in your local network"
     )
     parser.add_argument(
         "directory",

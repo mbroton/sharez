@@ -1,4 +1,4 @@
-from pyshare import main
+from sharez import main
 
 
 raise SystemExit(main())
